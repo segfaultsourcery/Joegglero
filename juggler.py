@@ -17,7 +17,7 @@ class Juggler:
     jobs = {}
     tpe = ThreadPoolExecutor(8)
 
-    def __init__(self) -> None:
+    def __init__(self):
         raise Exception(f"Do not instantiate {type(self).__name__}.")
 
     @classmethod
