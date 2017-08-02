@@ -17,6 +17,9 @@ class Juggler:
     jobs = {}
     tpe = ThreadPoolExecutor(8)
 
+    def __init__(self) -> None:
+        raise Exception(f"Do not instantiate {type(self).__name__}.")
+
     @classmethod
     def _get_job_id(cls):
         with cls.lock:
