@@ -1,13 +1,28 @@
-from flask import Flask, jsonify as _jsonify, request
+import json
+
+from flask import Flask, request
 
 from juggler import Juggler
 
 app = Flask(__name__)
 
 
-def jsonify(fn):
+def apiresult(fn):
     def _wrapper(*args, **kw):
-        return _jsonify(fn(*args, **kw))
+
+        result = None
+        error = None
+
+        try:
+            result = fn(*args, **kw)
+
+        except Exception as exception:
+            error = str(exception)
+
+        return json.dumps({
+            'result': result,
+            'error': error
+        })
 
     _wrapper.__name__ = fn.__name__
     _wrapper.__doc__ = fn.__doc__
@@ -17,62 +32,50 @@ def jsonify(fn):
 
 @app.route('/submit/<path:command>', methods=['GET'])
 @app.route('/submit', methods=['POST'])
-@jsonify
+@apiresult
 def submit(command=None):
     if command is None:
         command = request.json
 
     job_id = Juggler.submit_job(command)
-    return {'job_id': job_id}
+    return job_id
 
 
 @app.route('/submit_many', methods=['POST'])
-@jsonify
+@apiresult
 def submit_many():
     commands = request.json
     job_ids = list(map(Juggler.submit_job, commands))
-    return {'job_ids': job_ids}
+    return job_ids
 
 
 @app.route('/submit_chain', methods=['POST'])
-@jsonify
+@apiresult
 def submit_chain():
     commands = request.json
     job_ids = Juggler.submit_queue(commands)
-    return {'job_ids': job_ids}
+    return job_ids
 
 
 @app.route('/result/<int:job_id>')
-@jsonify
+@apiresult
 def get_result(job_id):
-    try:
-        job_id, result = Juggler.get_result(job_id)
-        return {job_id: result}
-
-    except KeyError as e:
-        return {'error': str(e)}
+    job_id, result = Juggler.get_result(job_id)
+    return result
 
 
 @app.route('/status/<int:job_id>')
-@jsonify
+@apiresult
 def get_status(job_id):
-    try:
-        job_id, result = Juggler.get_status(job_id)
-        return {job_id: result}
-
-    except KeyError as e:
-        return {'error': str(e)}
+    job_id, result = Juggler.get_status(job_id)
+    return result
 
 
 @app.route('/status')
-@jsonify
+@apiresult
 def get_all_statuses():
-    try:
-        result = Juggler.get_all_statuses()
-        return dict(result)
-
-    except KeyError as e:
-        return {'error': str(e)}
+    result = Juggler.get_all_statuses()
+    return dict(result)
 
 
 if __name__ == '__main__':

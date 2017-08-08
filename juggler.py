@@ -110,14 +110,12 @@ class Juggler:
                 'command': command,
                 'done': False,
                 'running': False,
-                'cancelled': False,
                 'waiting': True}
 
         return job_id, {
             'command': command,
             'done': future.done(),
             'running': future.running(),
-            'cancelled': future.cancelled(),
             'waiting': False}
 
     @classmethod
@@ -128,12 +126,10 @@ class Juggler:
                     'command': command,
                     'done': False,
                     'running': False,
-                    'cancelled': False,
                     'waiting': True}
             else:
                 yield job_id, {
                     'command': command,
                     'done': future.done(),
                     'running': future.running(),
-                    'cancelled': future.cancelled(),
                     'waiting': False}
