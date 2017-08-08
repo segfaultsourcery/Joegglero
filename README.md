@@ -35,7 +35,7 @@ A more robust way of submitting a job is by posting an array of terms.
     url = "http://localhost:5000/submit"
     result = requests.post(url, json=['echo', 'this is a more robust test'])
 
-## Submit a number of jobs to be executed simultaneously
+## Submit jobs to be executed simultaneously
 
     import requests
     
@@ -45,7 +45,7 @@ A more robust way of submitting a job is by posting an array of terms.
         ['echo', 'It's impossible to say which one of these will finish first.']
     ])
 
-## Submit a number of jobs to be executed in a queue
+## Submit jobs to be executed in a queue
 
     import requests
     
