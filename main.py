@@ -9,7 +9,6 @@ app = Flask(__name__)
 
 def apiresult(fn):
     def _wrapper(*args, **kw):
-
         result = None
         error = None
 
